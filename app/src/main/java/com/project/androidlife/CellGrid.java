@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 public class CellGrid {
 
     private boolean[][] grid;
-    private final int xSize, ySize;
+    private int xSize, ySize;
 
     public CellGrid(int xSize, int ySize) {
         this.xSize = xSize;
@@ -29,8 +29,8 @@ public class CellGrid {
         boolean[][] newGrid = new boolean[xSize][ySize];
         for (int x = 0; x < xSize-1; x++) {
             for (int y = 0; y < ySize-1; y++) {
-                int neighbors = getLiveNeighbors(this.grid, x, y);
-                if (this.grid[x][y]) {
+                int neighbors = getLiveNeighbors(grid, x, y);
+                if (grid[x][y]) {
                     if (neighbors == 2 || neighbors == 3) newGrid[x][y] = true;
                 } else {
                     if (neighbors == 3) newGrid[x][y] = true;
@@ -45,7 +45,17 @@ public class CellGrid {
     }
 
     public void setGrid(boolean[][] grid) {
+        this.xSize = grid.length;
+        this.ySize = grid[0].length;
         this.grid = grid;
+    }
+
+    public int getxSize() {
+        return this.xSize;
+    }
+
+    public int getySize() {
+        return this.ySize;
     }
 
     private int getLiveNeighbors(boolean[][] grid, int cX, int cY) {

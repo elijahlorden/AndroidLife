@@ -18,27 +18,31 @@ public class ViewGrid extends View {
     private Paint paint;
     private CellGrid grid;
 
-    private int gridSizeX, gridSizeY;
-    private float viewportSize;
+    private long maxSpeed = 500L;
+    private long minSpeed = 20L;
+
+    private boolean playing;
+
+    private long tickDelay = 250L;
+
+    private final Runnable tickTask = new Runnable() {
+        @Override
+        public void run() {
+            if (playing) grid.tick();
+            handler.postDelayed(tickTask, tickDelay);
+        }
+    };
+
 
     public ViewGrid(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        playing = false;
         this.setBackgroundColor(0xFF000000);
         paint = new Paint();
         paint.setColor(0xFFFFFFFF);
         paint.setStyle(Paint.Style.FILL_AND_STROKE);
-        gridSizeX = 30;
-        gridSizeY = 40;
-        grid = new CellGrid(gridSizeX, gridSizeY);
+        grid = new CellGrid(80, 100);
         final ViewGrid instance = this;
-//        grid.setCell(grid.getGrid(), 17, 17, true);
-//        grid.setCell(grid.getGrid(), 18, 17, true);
-//        grid.setCell(grid.getGrid(), 19, 17, true);
-//        grid.setCell(grid.getGrid(), 19, 18, true);
-//        grid.setCell(grid.getGrid(), 18, 19, true);
-        grid.setCell(grid.getGrid(), 0, 0, true);
-        grid.setCell(grid.getGrid(), 0, 1, true);
-        grid.setCell(grid.getGrid(), 0, 2, true);
         TimerTask refreshTask = new TimerTask() {
             @Override
             public void run() {
@@ -52,25 +56,28 @@ public class ViewGrid extends View {
         };
         timer.schedule(refreshTask, 1,1);
 
-        TimerTask tickTask = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        grid.tick();
-                    }
-                });
-            }
-        };
-        timer.schedule(tickTask, 3000,500);
+        handler.postDelayed(tickTask, tickDelay);
+
+//        TimerTask tickTask = new TimerTask() {
+//            @Override
+//            public void run() {
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (playing) grid.tick();
+//                    }
+//                });
+//            }
+//        };
+//        timer.schedule(tickTask, 500,100);
 
 
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-
+        float gridSizeX = grid.getxSize();
+        float gridSizeY = grid.getySize();
         float sizeX = canvas.getWidth()/gridSizeX;
         float sizeY = canvas.getHeight()/gridSizeY;
         for (int y = 0; y < gridSizeY; y++) {
@@ -86,6 +93,20 @@ public class ViewGrid extends View {
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         invalidate();
+    }
+
+    public void setPlaying(boolean playing) {
+        this.playing = playing;
+    }
+
+    public boolean isPlaying() {
+        return this.playing;
+    }
+
+    public CellGrid getGrid() { return this.grid; }
+
+    public void setSpeed(float frac) {
+        tickDelay = Math.max(minSpeed, (long) (((float)maxSpeed)*(1-frac)));
     }
 
 }
