@@ -411,11 +411,13 @@ public class GridSelector extends AppCompatActivity {
             Button button = new Button(this);
             button.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             button.setText(k);
+            if (k.equals(currSel)) button.setTextColor(0xFF0000FF);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent retData = new Intent();
                     retData.putExtra("grid", builtPresets.get(s));
+                    retData.putExtra("gridName", s);
                     setResult(RESULT_OK, retData);
                     finish();
                 }

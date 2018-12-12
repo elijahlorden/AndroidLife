@@ -108,7 +108,7 @@ public class Life extends AppCompatActivity {
             if (resultCode == RESULT_OK) {
                 boolean[][] retGrid = (boolean[][]) data.getSerializableExtra("grid");
                 grid.getGrid().setGrid(retGrid);
-
+                lastSelectedGrid = data.getStringExtra("gridName");
 
 
             }
