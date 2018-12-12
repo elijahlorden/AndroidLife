@@ -14,7 +14,7 @@ import android.widget.SeekBar;
 public class Life extends AppCompatActivity {
 
     private ViewGrid grid;
-    private FloatingActionButton fab;
+    private FloatingActionButton fab, fab2;
     private SeekBar speedSlider;
 
     private String lastSelectedGrid = "";
@@ -36,6 +36,7 @@ public class Life extends AppCompatActivity {
         setSupportActionBar(toolbar);
         grid = findViewById(R.id.viewGrid);
         fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
         speedSlider = findViewById(R.id.seekBar);
 
         speedSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -58,7 +59,6 @@ public class Life extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()'
                 if (grid.isPlaying()) {
                     grid.setPlaying(false);
                     fab.setImageResource(android.R.drawable.ic_media_play);
@@ -68,6 +68,19 @@ public class Life extends AppCompatActivity {
                 }
             }
         });
+
+        fab2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setPlaying(false);
+                Intent intent = new Intent(Life.this, GridSelector.class);
+                intent.putExtra("currSel", lastSelectedGrid);
+                intent.putExtra("restart", true);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+
     }
 
     @Override
@@ -90,10 +103,12 @@ public class Life extends AppCompatActivity {
                 if (item.isChecked()) {
                     item.setChecked(false);
                     fab.setVisibility(View.VISIBLE);
+                    fab2.setVisibility(View.VISIBLE);
                     speedSlider.setVisibility(View.VISIBLE);
                 } else {
                     item.setChecked(true);
                     fab.setVisibility(View.GONE);
+                    fab2.setVisibility(View.GONE);
                     speedSlider.setVisibility(View.GONE);
                 }
                 return true;

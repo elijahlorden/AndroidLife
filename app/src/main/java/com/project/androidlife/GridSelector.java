@@ -405,6 +405,14 @@ public class GridSelector extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grid_selector);
         String currSel = getIntent().getStringExtra("currSel");
+        boolean restart = getIntent().getBooleanExtra("restart", false);
+        if (restart) {
+            Intent retData = new Intent();
+            retData.putExtra("grid", builtPresets.get(currSel));
+            retData.putExtra("gridName", currSel);
+            setResult(RESULT_OK, retData);
+            finish();
+        }
         LinearLayout layout = findViewById(R.id.listContainer);
         for (String k : builtPresets.keySet()) {
             final String s = k;
